@@ -10,13 +10,13 @@ from __future__ import annotations
 import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_NAME, CONF_SCAN_INTERVAL, CONF_VERIFY_SSL
-from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, callback
+from homeassistant.const import CONF_NAME, CONF_SCAN_INTERVAL
+from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import voluptuous as vol
 
-from .api import NebulaEndpointError, NebulaMetricsClient
+from .api import NebulaMetricsClient
 from .const import (
     CONF_METRICS_URL,
     CONF_VERIFY_TLS,
@@ -32,8 +32,7 @@ from .coordinator import NebulaCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-# Re-export DOMAIN so HA can find it via `custom_components.nebula.DOMAIN`.
-__all__ = ["DOMAIN", "PLATFORMS", "async_setup_entry", "async_unload_entry"]
+__all__ = ["DOMAIN", "PLATFORMS", "async_setup", "async_setup_entry", "async_unload_entry"]
 
 # Schema for the optional `nebula.get_metrics` service. The entry_id selects
 # which configured Nebula instance to query; if omitted and exactly one entry
@@ -47,7 +46,6 @@ GET_METRICS_SCHEMA = vol.Schema(
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the nebula integration — registers the get_metrics service."""
-    # Track all coordinators by entry_id so the service can find them.
     hass.data.setdefault(DOMAIN, {})
 
     async def _handle_get_metrics(call: ServiceCall) -> ServiceResponse:
@@ -84,10 +82,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     metrics_url = entry.data.get(CONF_METRICS_URL, DEFAULT_METRICS_URL)
     verify_tls = entry.data.get(CONF_VERIFY_TLS, DEFAULT_VERIFY_TLS)
     name = entry.data.get(CONF_NAME, DEFAULT_NAME)
-    scan_interval = entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
+    scan_interval = entry.options.get(
+        CONF_SCAN_INTERVAL,
+        entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+    )
 
     session = async_get_clientsession(hass, verify_tls=verify_tls)
-    client = NebulaMetricsClient(session=session, metrics_url=metrics_url, verify_tls=verify_tls)
+    client = NebulaMetricsClient(
+        session=session, metrics_url=metrics_url, verify_tls=verify_tls
+    )
     coordinator = NebulaCoordinator(
         hass=hass,
         client=client,
