@@ -1,0 +1,22 @@
+# Services exposed by the nebula integration.
+#
+# The `get_metrics` service is registered dynamically in __init__.py with
+# `supports_response=True`. This file documents it for the UI; the schema is
+# also enforced at call time by voluptuous in the registration code.
+get_metrics:
+  name: Get metrics
+  description: >-
+    Fetch the latest scraped Prometheus document from the configured Nebula
+    metrics endpoint. Returns a response payload containing the parsed
+    metrics as a JSON-friendly dict. Useful for templating against metrics
+    that aren't surfaced as dedicated entities.
+  fields:
+    entry_id:
+      name: Entry ID
+      description: >-
+        The config entry to query. Omit when only one Nebula instance is
+        configured; the integration will pick the single available entry
+        automatically.
+      example: ""
+      selector:
+        text:
