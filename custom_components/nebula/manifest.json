@@ -1,0 +1,13 @@
+{
+  "domain": "nebula",
+  "name": "Nebula VPN",
+  "codeowners": ["@mjallen"],
+  "config_flow": true,
+  "documentation": "https://gitea.mjallen.dev/mjallen/hass-nebula",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://gitea.mjallen.dev/mjallen/hass-nebula/issues",
+  "loggers": ["custom_components.nebula"],
+  "requirements": [],
+  "version": "0.1.0"
+}
