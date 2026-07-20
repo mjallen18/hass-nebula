@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlowResult
-from homeassistant.const import CONF_NAME, CONF_SCAN_INTERVAL, CONF_VERIFY_SSL
+from homeassistant.const import CONF_NAME, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -23,19 +24,13 @@ from .const import (
     DOMAIN,
 )
 
+_LOGGER = logging.getLogger(__name__)
+
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
         vol.Required(CONF_METRICS_URL, default=DEFAULT_METRICS_URL): str,
         vol.Optional(CONF_VERIFY_TLS, default=DEFAULT_VERIFY_TLS): bool,
-    }
-)
-
-OPTIONS_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
-            vol.Coerce(int), vol.Range(min=5, max=3600)
-        ),
     }
 )
 
@@ -129,7 +124,6 @@ class NebulaOptionsFlowHandler(config_entries.OptionsFlow):
             CONF_SCAN_INTERVAL,
             self.config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
         )
-        schema = self.OPTIONS_SCHEMA if hasattr(self, "OPTIONS_SCHEMA") else OPTIONS_SCHEMA
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
