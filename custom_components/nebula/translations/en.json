@@ -1,0 +1,62 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Nebula VPN",
+        "description": "Configure the Nebula VPN metrics endpoint.",
+        "data": {
+          "name": "Name",
+          "metrics_url": "Metrics URL",
+          "verify_tls": "Verify TLS certificate"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the Nebula metrics endpoint. Check the URL and that Nebula is running with the `stats:` block enabled.",
+      "invalid_auth": "The Nebula metrics endpoint rejected the request (401/403).",
+      "unknown": "Unexpected error. Check the Home Assistant logs."
+    },
+    "abort": {
+      "already_configured": "This Nebula endpoint is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Nebula VPN options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    }
+  },
+  "services": {
+    "get_metrics": {
+      "name": "Get metrics",
+      "description": "Returns the full parsed Prometheus document from the Nebula metrics endpoint for templating and debugging.",
+      "fields": {
+        "entry_id": {
+          "name": "Entry ID",
+          "description": "The config entry to query. Omit when only one Nebula instance is configured."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "running": { "name": "Service running" },
+      "lighthouse_connected": { "name": "Lighthouse connected" }
+    },
+    "sensor": {
+      "peer_count": { "name": "Connected peers" },
+      "pending_handshakes": { "name": "Pending handshakes" },
+      "cert_ttl": { "name": "Certificate TTL" },
+      "handshakes_initiated": { "name": "Handshakes initiated" },
+      "handshakes_timed_out": { "name": "Handshakes timed out" },
+      "messages_tx": { "name": "Messages sent" },
+      "messages_rx": { "name": "Messages received" },
+      "packets_lost": { "name": "Packets lost" },
+      "version": { "name": "Nebula version" }
+    }
+  }
+}
