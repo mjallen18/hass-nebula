@@ -42,7 +42,7 @@ async def _validate_metrics(
 
     Raises CannotConnect on network/parse failure, InvalidAuth on 401/403.
     """
-    session = async_get_clientsession(hass, verify_tls=verify_tls)
+    session = async_get_clientsession(hass, verify_ssl=verify_tls)
     client = NebulaMetricsClient(
         session=session, metrics_url=metrics_url, verify_tls=verify_tls
     )
