@@ -85,11 +85,23 @@ The integration is configured entirely through the UI. Options:
 
 Home Assistant OS is a locked-down appliance: a `custom_components`
 integration cannot install or start the `nebula` binary. To actually bring
-up the tunnel you need a companion add-on that runs `nebula-service` inside
-a container and exposes the Prometheus listener on a port the Home
-Assistant container can reach.
+up the tunnel you need the companion add-on:
 
-A matching add-on is tracked separately — once published, link it here.
+**[haos-nebula](https://gitea.mjallen.dev/mjallen/haos-nebula)** — runs
+`nebula` inside a Home Assistant add-on container with `host_network` +
+`CAP_NET_ADMIN` + `/dev/net/tun`, and exposes the Prometheus listener on
+port 8080 so this integration can scrape it.
+
+To generate a config for the add-on, use
+[`nebula-tui`](https://gitea.mjallen.dev/mjallen/nix-config) (if you have
+it) with the `export-haos` subcommand:
+
+```bash
+nebula-tui export-haos <hostname> -o /share/nebula/config.yml
+```
+
+See the [add-on README](https://gitea.mjallen.dev/mjallen/haos-nebula) for
+full setup instructions.
 
 ## Why no per-peer sensors?
 
