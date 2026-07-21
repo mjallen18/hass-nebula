@@ -63,6 +63,14 @@ class NebulaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @staticmethod
+    @config_entries.callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> "NebulaOptionsFlowHandler":
+        """Wire up the options flow so users can change scan interval."""
+        return NebulaOptionsFlowHandler(config_entry)
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -85,8 +93,6 @@ class NebulaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected error validating nebula endpoint")
                 errors["base"] = "unknown"
             else:
-                # Build a unique id from the URL so re-adding the same
-                # endpoint reuses the existing entry rather than duplicating.
                 await self.async_set_unique_id(
                     user_input[CONF_METRICS_URL], raise_on_update=False
                 )
