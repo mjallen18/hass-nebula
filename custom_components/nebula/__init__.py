@@ -34,9 +34,6 @@ _LOGGER = logging.getLogger(__name__)
 
 __all__ = ["DOMAIN", "PLATFORMS", "async_setup", "async_setup_entry", "async_unload_entry"]
 
-# Schema for the optional `nebula.get_metrics` service. The entry_id selects
-# which configured Nebula instance to query; if omitted and exactly one entry
-# exists we use it automatically.
 GET_METRICS_SCHEMA = vol.Schema(
     {
         vol.Optional("entry_id"): cv.string,
@@ -87,7 +84,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
     )
 
-    session = async_get_clientsession(hass, verify_tls=verify_tls)
+    session = async_get_clientsession(hass, verify_ssl=verify_tls)
     client = NebulaMetricsClient(
         session=session, metrics_url=metrics_url, verify_tls=verify_tls
     )
